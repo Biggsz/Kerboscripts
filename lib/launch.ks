@@ -53,7 +53,7 @@ function launch_leaveAtmo {
 
 	Until currentVessel:Obt:Apoapsis >= 71000
 	{
-		Wait Until currentVessel:Obt:Apoapsis >= 70000 Or currentVessel:MaxThrust = 0.
+		Wait Until currentVessel:Obt:Apoapsis >= 71000 Or currentVessel:MaxThrust = 0.
 		If currentVessel:MaxThrust = 0 {
 			Stage.
 		}
@@ -61,7 +61,7 @@ function launch_leaveAtmo {
 
 	Unlock Throttle.
 
-	Print "~~Apoapsis >= 70000~~".	
+	Print "~~Apoapsis >= 71000~~".	
 	Set Warp To 0.
 }
 
@@ -70,7 +70,19 @@ function launch_circularize {
 
 	Set Warp To 3.
 
-	Wait Until ETA:Apoapsis <= 30.
+	Until ETA:Apoapsis <= 30 {
+		Wait Until ETA:Apoapsis <= 30 or currentVessel:Obt:Apoapsis < 71000.
+		If currentVessel:Obt:Apoapsis < 71000 {
+			Set Warp To 0.
+			Lock Steering To currentVessel:Velocity:Orbit.
+			Lock Throttle To 0.1.
+			Wait Until currentVessel:Obt:Apoapsis >= 71000.
+			Unlock Throttle.
+			Set Warp To 3.
+		}
+	}
+
+	Set Warp To 0.
 
 	Lock Throttle To getAscendingThrottle(10,False).
 
