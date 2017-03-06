@@ -1,0 +1,28 @@
+@LAZYGLOBAL OFF.
+
+Function land_start {
+	Print "~~Start landing~~".
+
+	Kuniverse:TimeWarp:WarpTo(time:seconds + Eta:Apoapsis - 30).
+	Wait Until Eta:Apoapsis <= 10.
+
+	Lock Steering To Retrograde.
+	Wait 20.
+	Lock Throttle To 1.
+	Wait Until currentVessel:Obt:Periapsis <= 60000.
+	Unlock Throttle.
+
+	Print "~~Periapsis in atmosphere~~".
+	Wait.
+	Set Warp To 5.
+	Wait Until currentVessel:Altitude <= 70000.
+	Set Warp To 0.
+
+	Lock Throttle To 1.
+	Wait Until currentVessel:MaxThrust = 0.
+	Until Stage:Number = 0 {
+		Stage.
+	}
+
+	Print "~~Landing~~".
+}
